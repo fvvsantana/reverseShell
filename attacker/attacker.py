@@ -10,15 +10,17 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
 
     # Server domain
-    base_url = 'http://localhost/kellyclarkson/'
+    base_url = 'http://www.reverseShell.com'
 
     # Store command
     data = {'cmd': None}
 
     # Start session
     with requests.session() as s:
+        s.cookies.set('PHPSESSID','1c5afa5bfe47e48f5c75aa349c497b5d')
+        print(s.cookies)
         # Log in as attacker
-        response = login(s, base_url + 'login.php', 'attacker')
+        response = login(s, base_url + '/login.php', 'attacker')
 
         #print(s.cookies.get_dict())
         #print(response.content)

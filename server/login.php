@@ -13,7 +13,8 @@
 	*/
 
 	/*
-	 * Return true if session is stored in the database.
+	 * Return the number of rows where current session id matches the column
+	 * SESSION_ID in the table.
 	 * If type == 'attacker' it will search inside of ATTACKERS table.
 	 * If type == 'victim' it will search inside of VICTIMS table.
 	*/
@@ -30,14 +31,18 @@
 		$sessionId = session_id();
 
 		# Search for session id inside of the chosen table
-		$sql = "SELECT SESSION_ID FROM $table WHERE SESSION_ID=$sessionId";
+		$sql = "SELECT SESSION_ID FROM $table WHERE SESSION_ID='$sessionId'";
 		$result = mysqli_query($connection, $sql);
 
-		#saveDebug('Result is: ' . print_r($result) . '\n');
+		# Return number of rows in result
 		return mysqli_num_rows($result);
 	}
 
-	#
+	/*
+	Store user information (session) into database. It's stored as a row in
+	the table "VICTIMS" or "ATTACKERS", containing: Session ID, IP, PORT, Host
+	Name and Timestamp of last appearance.
+	*/
 	function storeSession($connection, $type){
 		if($type == 'victim'){
 			# Prepare query

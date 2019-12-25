@@ -3,8 +3,7 @@
     define('SESSION_MAX_AGE', 60*60*24); # 1 day
 
     # The maximum time that a session will be openned
-    #define('INTERVAL_BETWEEN_SESSION_DELETIONS', 60*60*24); # 1 day
-    define('INTERVAL_BETWEEN_SESSION_DELETIONS', 1); # 1 day
+    define('INTERVAL_BETWEEN_SESSION_DELETIONS', 60*60*24); # 1 day
 
     # Update Last Seen of user
     function updateLastSeen($conn){
@@ -24,13 +23,16 @@
 		}
     }
 
-    # Return true if has passed at least INTERVAL_BETWEEN_SESSION_DELETIONS
-    # since the last deletion of sessions. Else, return false.
+    /*
+    Return true if the last deletion of old sessions occurred at least an
+    interval of time of INTERVAL_BETWEEN_SESSION_DELETIONS ago.
+    That is, return true if it's time to delete old sessions.
+    */
     function shouldDeleteOldSessions($conn){
         $sql = "SELECT * FROM UTILS
                 WHERE TIMESTAMPDIFF(SECOND, LAST_DELETION_OF_SESSIONS, NOW()) > " . INTERVAL_BETWEEN_SESSION_DELETIONS;
 		$result = mysqli_query($conn, $sql);
-        print_r($result);
+        #print_r($result);
 		return mysqli_num_rows($result);
     }
     // ?????????????????????????????????????????????????????????????????????????????????
@@ -70,7 +72,6 @@
 
     }
 
-
 	# Start user session
 	session_start();
 
@@ -80,8 +81,8 @@
     # Update Last Seen of user
     updateLastSeen($conn);
 
+    # If it's time to delete old sessions
     if(shouldDeleteOldSessions($conn)){
-        echo 'ai meu cu';
         # Delete old sessions from database
         deleteOldSessions($conn);
     }
