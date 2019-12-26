@@ -112,7 +112,7 @@
     	 * If type == 'attacker' it will search inside of ATTACKERS table.
     	 * If type == 'victim' it will search inside of VICTIMS table.
     	*/
-    	function isSessionStored($type){
+    	function isCurrentSessionStored($type){
     		# Choose right table
     		$table = '';
     		if($type == 'attacker'){
@@ -137,7 +137,7 @@
     	the table "VICTIMS" or "ATTACKERS", containing: Session ID, IP, PORT, Host
     	Name and Timestamp of last appearance.
     	*/
-    	function storeSession($type){
+    	function storeCurrentSession($type){
     		# Choose right table
     		$table = '';
     		if($type == 'attacker'){
@@ -165,6 +165,12 @@
 			}
 
     	}
+
+        /*
+        function isSessionActive($sessionId){
+
+        }
+        */
 
     }
 ?>

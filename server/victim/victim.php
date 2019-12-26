@@ -2,8 +2,8 @@
     sleep(5);
     echo "eae gente";
 
-	include('modules/sessionManager.php');
-	include('modules/databaseManager.php');
+	include('../modules/sessionManager.php');
+	include('../modules/databaseManager.php');
 
     function main(){
         # Connect to database
@@ -15,7 +15,7 @@
         $sessionManager->startSessionControl();
 
 		# Check if the session is already stored
-		if($sessionManager->isSessionStored("victim")){
+		if($sessionManager->isCurrentSessionStored("victim")){
 
         }else{
             echo "Your user is not logged. First login, then enter this page.";

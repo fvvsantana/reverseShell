@@ -18,12 +18,12 @@
 			$type = $_GET['type'];
 
 			# Check if the session is already stored
-			if($sessionManager->isSessionStored($type)){
+			if($sessionManager->isCurrentSessionStored($type)){
 				echo "Login Successful\n";
 				#header("Location: $type.php");
 			}else{
 				# Store the current session
-				if($sessionManager->storeSession($type)){
+				if($sessionManager->storeCurrentSession($type)){
 					echo "Login Successful\n";
 					#header("Location: $type.php");
 				}else{

