@@ -5,7 +5,7 @@ CREATE DATABASE kellyclarkson;
 -- DROP TABLE VICTIMS;
 
 -- Create user
-GRANT ALL ON *.* TO 'kellyclarksonmakesmestronger'@'localhost' IDENTIFIED BY 'mynameisnotkelly';
+GRANT ALL ON *.* TO 'userTest'@'localhost' IDENTIFIED BY 'passwordTest';
 
 -- Size of record: 255+39+16+100+32 = 442 bits
 CREATE TABLE VICTIMS(

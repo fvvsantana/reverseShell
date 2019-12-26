@@ -81,6 +81,7 @@ def main():
     #print(output)
     #attacker.disconnectFromVictim()
     printResponse(attacker.disconnectFromServer())
+    #printResponse(requests.request('GET', baseUrl + '/modules/sessionManager.php'))
 
 
     #print(s.cookies.get_dict())
