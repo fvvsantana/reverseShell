@@ -18,12 +18,20 @@
 			$type = $_GET['type'];
 
 			# Check if the session is already stored
-			if(!$sessionManager->isSessionStored($type)){
+			if($sessionManager->isSessionStored($type)){
+				echo 'Login Successful\n';
+				#header("Location: $type.php");
+			}else{
 				# Store the current session
 				if($sessionManager->storeSession($type)){
-					header("Location: $type.php");
+					echo 'Login Successful\n';
+					#header("Location: $type.php");
+				}else{
+					echo 'Login failed\n';
+	                http_response_code(500);
 				}
 			}
+
 		}
 
         # Disconnect from database

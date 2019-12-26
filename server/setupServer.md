@@ -1,4 +1,4 @@
-# Open file: 
+# Open file:
 /etc/hosts
 #and add line:
 127.0.0.1       www.reverseShell.com
@@ -20,6 +20,18 @@ Include etc/extra/httpd-vhosts.conf
     CustomLog "logs/reverseShellAccessLog" common
     <Directory "/home/flaviokc/Dropbox/git/php/reverseShell/server">
         Require all granted    
+        Options +Indexes
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName localhost
+    ServerAlias localhost
+    DocumentRoot "/opt/lampp/htdocs"
+    ErrorLog "logs/error_log"
+    CustomLog "logs/access_log" common
+    <Directory "/opt/lampp/htdocs">
+        Require all granted
         Options +Indexes
     </Directory>
 </VirtualHost>
@@ -48,5 +60,3 @@ https://www.youtube.com/watch?v=zPmYyLLGjmU
 
 # This tutorial is for Windows 7, but gave me the idea of how to grant access to the folder
 https://stackoverflow.com/questions/9110179/adding-virtualhost-fails-access-forbidden-error-403-xampp-windows-7
-
-

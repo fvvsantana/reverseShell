@@ -20,12 +20,14 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                http_response_code(500);
     		}
 
             $sql = "UPDATE VICTIMS SET LAST_SEEN=NOW() WHERE SESSION_ID='$currentSessionId'";
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                http_response_code(500);
     		}
         }
 
@@ -56,6 +58,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                http_response_code(500);
     		}
 
             # Delete old sessions of victims, but not the current session
@@ -65,6 +68,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                http_response_code(500);
     		}
 
             # Update timestamp of last deletion
@@ -72,6 +76,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                http_response_code(500);
     		}
         }
 
@@ -148,6 +153,7 @@
 				return True;
 			}else{
 				echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                http_response_code(500);
 				return False;
 			}
 
