@@ -74,6 +74,7 @@ def main():
     data = {'cmd': None}
 
     attacker = Attacker()
+    print('Requesting login...')
     printResponse(attacker.connectToServer(baseUrl))
     #victimsList = attacker.listVictims()
     #attacker.connectToVictim(victimsList[0])

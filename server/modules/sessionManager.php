@@ -20,6 +20,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                # 500 Internal Server Error
                 http_response_code(500);
     		}
 
@@ -27,6 +28,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                # 500 Internal Server Error
                 http_response_code(500);
     		}
         }
@@ -58,6 +60,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                # 500 Internal Server Error
                 http_response_code(500);
     		}
 
@@ -68,6 +71,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                # 500 Internal Server Error
                 http_response_code(500);
     		}
 
@@ -76,6 +80,7 @@
     		# Check query error
     		if(!mysqli_query($this->conn, $sql)){
     			echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                # 500 Internal Server Error
                 http_response_code(500);
     		}
         }
@@ -89,7 +94,8 @@
         	# Start user session
         	session_start();
 
-            # Update Last Seen of current user
+            # Update Last Seen of current user, only if user already is in the
+            # table.
             $this->updateLastSeen();
 
             # If it's time to delete old sessions
@@ -153,6 +159,7 @@
 				return True;
 			}else{
 				echo "SQL query error:\n Query: $sql \n Error: " . mysqli_error($this->conn) . '\n';
+                # 500 Internal Server Error
                 http_response_code(500);
 				return False;
 			}

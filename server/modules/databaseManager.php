@@ -6,6 +6,7 @@
 			$this->conn = mysqli_connect('localhost', 'userTest', 'passwordTest', 'kellyclarkson');
 			if(!$this->conn){
 				echo 'Connection error: ' . mysqli_connect_error();
+                # 500 Internal Server Error
                 http_response_code(500);
 			}
 			return $this->conn;

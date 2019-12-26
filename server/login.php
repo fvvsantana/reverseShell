@@ -19,15 +19,16 @@
 
 			# Check if the session is already stored
 			if($sessionManager->isSessionStored($type)){
-				echo 'Login Successful\n';
+				echo "Login Successful\n";
 				#header("Location: $type.php");
 			}else{
 				# Store the current session
 				if($sessionManager->storeSession($type)){
-					echo 'Login Successful\n';
+					echo "Login Successful\n";
 					#header("Location: $type.php");
 				}else{
-					echo 'Login failed\n';
+					echo "Login failed\n";
+	                # 500 Internal Server Error
 	                http_response_code(500);
 				}
 			}
