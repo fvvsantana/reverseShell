@@ -166,11 +166,5 @@
 
     	}
 
-        /*
-        function isSessionActive($sessionId){
-
-        }
-        */
-
     }
 ?>

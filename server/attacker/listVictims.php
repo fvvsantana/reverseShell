@@ -14,7 +14,6 @@
 		# Check if the session is already stored
 		if($sessionManager->isCurrentSessionStored("attacker")){
 			if($_SERVER["REQUEST_METHOD"] == "GET"){
-				echo "Deu certo\n";
 
 			}
         }else{
