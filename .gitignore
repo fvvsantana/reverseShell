@@ -1,2 +1,3 @@
 attacker/cookies.dat
 victim/cookies.dat
+__pycache__/
